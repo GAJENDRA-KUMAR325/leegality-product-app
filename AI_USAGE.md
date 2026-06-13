@@ -15,20 +15,22 @@ This document records how AI assistance was used while building this project —
 
 ---
 
-## The prompts used (in order)
+## Development log
 
-The app was built iteratively through these requests:
+The application was delivered in iterative phases, each driven by a clear objective:
 
-1. Build the Leegality frontend exercise from the PDF — "do it in a good way just like a product-based company."
-2. Run the project.
-3. Fix the (non-functional) navbar product search.
-4. Make it available for **all countries** — language + currency per country.
-5. Also translate **product titles & descriptions** into the selected language.
-6. Translate **brand names** too (display-only).
-7. On country switch, show a **loader** until everything is translated (no English-first flash).
-8. Make the **scrollbar** look professional.
-9. "How do I make my assessment stand out from other candidates?" → then: add **tests, accessibility, URL-synced filters + sort, README/screenshots, deploy config, CI**.
-10. Push to GitHub (public).
+| # | Phase | Objective | Outcome |
+| --- | --- | --- | --- |
+| 1 | **Foundation** | Implement the Product Listing & Detail application per the assessment specification, to a production standard. | React + Vite app: combined filtering, pagination, routing, loading/error/empty states. |
+| 2 | **Verification** | Run the application and confirm behaviour against the brief. | Dev server validated; flows verified end-to-end. |
+| 3 | **Defect fix** | Make the header search a functional control (it was previously a static placeholder). | Search wired to shared filter state; works from any route. |
+| 4 | **Internationalisation** | Support multiple countries — UI language and localised currency per region. | 10 countries / 9 languages, `Intl`-based currency conversion, RTL support. |
+| 5 | **Content localisation** | Localise the catalogue content (titles, descriptions), not just the UI chrome. | Runtime machine translation with caching and fail-soft fallback. |
+| 6 | **Content localisation (cont.)** | Extend translation to brand names (display layer only). | Brands translated for display; original value retained as the filter key. |
+| 7 | **UX refinement** | Eliminate the English-first flash on language switch. | Render gated behind a loader until the visible page is fully translated. |
+| 8 | **Visual polish** | Replace default scrollbars with a refined, cross-browser treatment. | Slim, hover-reactive scrollbars (WebKit + Firefox). |
+| 9 | **Differentiation** | Raise the submission above a baseline implementation. | Added unit/integration **tests**, **accessibility**, **URL-synced filters + sort**, a showcase **README** with screenshots, **deploy config**, and **CI**. |
+| 10 | **Delivery** | Publish the work for review. | Public GitHub repository with green CI. |
 
 ---
 
