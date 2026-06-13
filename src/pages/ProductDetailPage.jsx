@@ -5,6 +5,7 @@ import { useLocale } from '../context/LocaleContext'
 import { useTranslated } from '../hooks/useTranslated'
 import { translateText, isCached } from '../api/translate'
 import StarRating from '../components/StarRating'
+import TranslatedText from '../components/TranslatedText'
 import { Loader, ErrorState } from '../components/States'
 
 /**
@@ -57,7 +58,13 @@ export default function ProductDetailPage() {
   // page reveals fully localized (no English-first flash on language switch).
   const [, rerender] = useReducer((x) => x + 1, 0)
   const detailStrings = product
-    ? [product.title, product.description, product.category, product.brand].filter(Boolean)
+    ? [
+        product.title,
+        product.description,
+        product.category,
+        product.brand,
+        ...(product.reviews?.map((r) => r.comment) ?? []),
+      ].filter(Boolean)
     : []
   const localized =
     !product ||
@@ -171,10 +178,11 @@ export default function ProductDetailPage() {
                 {product.reviews.map((r, i) => (
                   <li key={i} className="review">
                     <div className="review__head">
+                      {/* Reviewer names are people's names — left untranslated. */}
                       <span className="review__author">{r.reviewerName}</span>
                       <StarRating value={r.rating} showValue={false} />
                     </div>
-                    <p className="review__body">{r.comment}</p>
+                    <TranslatedText as="p" className="review__body" text={r.comment} />
                   </li>
                 ))}
               </ul>
