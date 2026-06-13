@@ -28,6 +28,7 @@ It demonstrates working with APIs, reusable components, state management, combin
 **Internationalization (i18n)**
 - Country picker in the navbar covering 10 countries / 9 languages (English, Hindi, German, French, Spanish, Portuguese, Japanese, Chinese, Arabic)
 - Switches **UI language**, **currency** (converted from USD + locale-aware `Intl` formatting, e.g. `₹58,157`, `643,08 €`, `¥5,068`) and **text direction** (RTL for Arabic)
+- **Product content is also translated** — titles, descriptions and category names are machine-translated at runtime (MyMemory, no API key), cached in memory + localStorage, with a fail-soft fallback to English
 - Selection persists across reloads (localStorage) and is reflected on `<html lang/dir>`
 
 ---
@@ -134,7 +135,7 @@ Loading (skeleton/spinner), error (with a retry that re-triggers the fetch), and
 - **Price applies explicitly.** Min/Max commit on **Apply** or **Enter** (not on every keystroke) to avoid filtering on half-typed numbers — matching the mockup's Apply button. Category, brand and search apply instantly.
 - **Page size** is fixed at 8 cards per page (matches the mockup's 2×4 grid).
 - **Search** (by title) is an added convenience consistent with the mockup's search bar; it composes with the other filters.
-- **i18n scope:** the API serves product *content* (titles/descriptions) in English only, so those stay English; the app's own UI is fully translated and **all prices are localized** (converted + formatted per country). FX rates are a static table — see decision #6.
+- **i18n scope:** the app's own UI is fully translated, **all prices are localized**, and product **content (titles/descriptions/categories) is machine-translated at runtime** with caching. Machine translation is best-effort — quality varies by language and the first view of a new product in a new language streams in (then caches). Brand names are intentionally left untranslated (proper nouns). FX rates are a static table — see decision #6.
 
 ---
 
