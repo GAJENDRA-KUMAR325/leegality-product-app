@@ -49,6 +49,7 @@ export default function ProductDetailPage() {
   const { text: title } = useTranslated(product?.title)
   const { text: description, translating: descTranslating } = useTranslated(product?.description)
   const { text: category } = useTranslated(product?.category)
+  const { text: brand } = useTranslated(product?.brand)
 
   // Return to listing; falls back to home if there's no history to pop.
   const goBack = () => {
@@ -110,7 +111,7 @@ export default function ProductDetailPage() {
           <dl className="detail__attrs">
             <div>
               <dt>{t('detail.brand')}</dt>
-              <dd>{product.brand || '—'}</dd>
+              <dd>{brand || '—'}</dd>
             </div>
             <div>
               <dt>{t('detail.category')}</dt>

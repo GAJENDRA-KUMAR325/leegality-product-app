@@ -135,7 +135,7 @@ Loading (skeleton/spinner), error (with a retry that re-triggers the fetch), and
 - **Price applies explicitly.** Min/Max commit on **Apply** or **Enter** (not on every keystroke) to avoid filtering on half-typed numbers — matching the mockup's Apply button. Category, brand and search apply instantly.
 - **Page size** is fixed at 8 cards per page (matches the mockup's 2×4 grid).
 - **Search** (by title) is an added convenience consistent with the mockup's search bar; it composes with the other filters.
-- **i18n scope:** the app's own UI is fully translated, **all prices are localized**, and product **content (titles/descriptions/categories) is machine-translated at runtime** with caching. Machine translation is best-effort — quality varies by language and the first view of a new product in a new language streams in (then caches). Brand names are intentionally left untranslated (proper nouns). FX rates are a static table — see decision #6.
+- **i18n scope:** the app's own UI is fully translated, **all prices are localized**, and product **content (titles, descriptions, categories and brands) is machine-translated at runtime** with caching. For brands the *displayed* text is translated/transliterated while the original English brand stays the **filter key**, so brand filtering keeps working across languages. Machine translation is best-effort — quality varies by language, and brand proper nouns may transliterate rather than translate. The first view of a new string in a new language streams in (then caches). FX rates are a static table — see decision #6.
 
 ---
 

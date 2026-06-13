@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import StarRating from './StarRating'
 import { useLocale } from '../context/LocaleContext'
 import { useTranslated } from '../hooks/useTranslated'
+import TranslatedText from './TranslatedText'
 
 /**
  * A single product tile. The whole card is a link to /product/:id.
@@ -30,7 +31,7 @@ export default function ProductCard({ product }) {
           <span className="card__price">{formatPrice(product.price)}</span>
           <StarRating value={product.rating} />
         </div>
-        {product.brand && <span className="card__brand">{product.brand}</span>}
+        {product.brand && <TranslatedText as="span" className="card__brand" text={product.brand} />}
       </div>
     </Link>
   )

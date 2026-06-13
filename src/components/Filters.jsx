@@ -128,7 +128,8 @@ export default function Filters({ categories, brands, resultCount }) {
                   checked={filters.brands.includes(b)}
                   onChange={() => toggleBrand(b)}
                 />
-                <span>{b}</span>
+                {/* Display is translated; the English `b` stays the filter key. */}
+                <TranslatedText text={b} />
               </label>
             ))}
           </div>
