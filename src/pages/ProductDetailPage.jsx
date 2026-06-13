@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { fetchProductById } from '../api/products'
 import { useLocale } from '../context/LocaleContext'
 import { useTranslated } from '../hooks/useTranslated'
+import { translateText, isCached } from '../api/translate'
 import StarRating from '../components/StarRating'
 import { Loader, ErrorState } from '../components/States'
 
@@ -16,7 +17,7 @@ import { Loader, ErrorState } from '../components/States'
 export default function ProductDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t, formatPrice } = useLocale()
+  const { t, formatPrice, country } = useLocale()
 
   const [product, setProduct] = useState(null)
   const [activeImage, setActiveImage] = useState(0)
@@ -51,6 +52,29 @@ export default function ProductDetailPage() {
   const { text: category } = useTranslated(product?.category)
   const { text: brand } = useTranslated(product?.brand)
 
+  // Pre-translate all detail content and hold a loader until it's ready, so the
+  // page reveals fully localized (no English-first flash on language switch).
+  const [, rerender] = useReducer((x) => x + 1, 0)
+  const detailStrings = product
+    ? [product.title, product.description, product.category, product.brand].filter(Boolean)
+    : []
+  const localized =
+    !product ||
+    country.lang === 'en' ||
+    detailStrings.every((s) => isCached(s, country.lang))
+
+  useEffect(() => {
+    if (localized) return
+    let cancelled = false
+    Promise.all(detailStrings.map((s) => translateText(s, country.lang))).then(() => {
+      if (!cancelled) rerender()
+    })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localized, product, country.lang])
+
   // Return to listing; falls back to home if there's no history to pop.
   const goBack = () => {
     if (window.history.length > 1) navigate(-1)
@@ -61,6 +85,7 @@ export default function ProductDetailPage() {
   if (error)
     return <ErrorState message={error} onRetry={() => setReloadKey((k) => k + 1)} />
   if (!product) return null
+  if (!localized) return <Loader label={t('state.loadingProduct')} />
 
   const images = product.images?.length ? product.images : [product.thumbnail]
 

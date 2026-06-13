@@ -1,8 +1,10 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useReducer } from 'react'
 import { useFilters } from '../context/FilterContext'
+import { useLocale } from '../context/LocaleContext'
 import { useProducts } from '../hooks/useProducts'
 import { useCategories } from '../hooks/useCategories'
 import { useDebounce } from '../hooks/useDebounce'
+import { translateText, isCached } from '../api/translate'
 import {
   extractBrands,
   applyFilters,
@@ -29,6 +31,7 @@ import { GridSkeleton, ErrorState, EmptyState } from '../components/States'
  */
 export default function ProductListPage() {
   const { filters, page, setPage, resetFilters } = useFilters()
+  const { country } = useLocale()
   const { products, loading, error, reload } = useProducts(filters.category)
   const { categories } = useCategories()
 
@@ -60,6 +63,34 @@ export default function ProductListPage() {
     [filtered, page, pageCount]
   )
 
+  // --- Language switch: pre-translate the visible page, show a loader until
+  // every title/brand is ready, then reveal (no English-first flash). ---
+  const [, rerender] = useReducer((x) => x + 1, 0)
+
+  const visibleStrings = useMemo(() => {
+    const out = []
+    for (const p of pageItems) {
+      if (p.title) out.push(p.title)
+      if (p.brand) out.push(p.brand)
+    }
+    return out
+  }, [pageItems])
+
+  // Synchronously known before paint, so we never render half-translated.
+  const localized =
+    country.lang === 'en' || visibleStrings.every((s) => isCached(s, country.lang))
+
+  useEffect(() => {
+    if (localized) return
+    let cancelled = false
+    Promise.all(visibleStrings.map((s) => translateText(s, country.lang))).then(() => {
+      if (!cancelled) rerender() // cache now warm → re-render reveals content
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [localized, visibleStrings, country.lang])
+
   const handlePageChange = (next) => {
     setPage(next)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -72,7 +103,7 @@ export default function ProductListPage() {
       <main className="content" aria-busy={loading}>
         {error ? (
           <ErrorState message={error} onRetry={reload} />
-        ) : loading ? (
+        ) : loading || !localized ? (
           <GridSkeleton count={PAGE_SIZE} />
         ) : filtered.length === 0 ? (
           <EmptyState onReset={resetFilters} />

@@ -30,6 +30,16 @@ function keyFor(text, lang) {
   return `${lang}::${text}`
 }
 
+/**
+ * Synchronous check: is this string already resolved for `lang`?
+ * Lets the UI decide *before* paint whether it can show localized content
+ * immediately or must show a loader. English is always "ready".
+ */
+export function isCached(text, lang) {
+  if (!text || lang === 'en') return true
+  return memCache.has(keyFor(text, lang))
+}
+
 function loadPersisted() {
   try {
     return JSON.parse(localStorage.getItem(STORE_KEY) || '{}')
@@ -76,7 +86,12 @@ export function translateText(text, lang) {
       persist(key, translated)
       return translated
     })
-    .catch(() => text) // fail soft — show English
+    .catch(() => {
+      // Fail soft: cache the English fallback in memory (not persisted) so we
+      // treat it as "resolved" and don't retry it on every render this session.
+      memCache.set(key, text)
+      return text
+    })
     .finally(() => inflight.delete(key))
 
   inflight.set(key, promise)
