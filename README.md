@@ -167,5 +167,11 @@ npm run test:run
 
 ---
 
+## 🤖 AI tooling
+
+This project was built with AI assistance (Claude Code / Claude Opus 4.8), used to scaffold, implement, and iterate — with all architecture, product decisions, and review done by me. Full transparency on the tool, the prompts, and the token/cost breakdown is in **[AI_USAGE.md](AI_USAGE.md)**.
+
+---
+
 Built with care for the Leegality Frontend Assessment.
 *(Regenerate screenshots: `npm run dev`, then `npm i -D playwright && npx playwright install chromium && node scripts/screenshot.mjs`.)*
