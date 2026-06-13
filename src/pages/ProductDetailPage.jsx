@@ -63,7 +63,7 @@ export default function ProductDetailPage() {
         product.description,
         product.category,
         product.brand,
-        ...(product.reviews?.map((r) => r.comment) ?? []),
+        ...(product.reviews?.flatMap((r) => [r.comment, r.reviewerName]) ?? []),
       ].filter(Boolean)
     : []
   const localized =
@@ -178,8 +178,11 @@ export default function ProductDetailPage() {
                 {product.reviews.map((r, i) => (
                   <li key={i} className="review">
                     <div className="review__head">
-                      {/* Reviewer names are people's names — left untranslated. */}
-                      <span className="review__author">{r.reviewerName}</span>
+                      <TranslatedText
+                        as="span"
+                        className="review__author"
+                        text={r.reviewerName}
+                      />
                       <StarRating value={r.rating} showValue={false} />
                     </div>
                     <TranslatedText as="p" className="review__body" text={r.comment} />
