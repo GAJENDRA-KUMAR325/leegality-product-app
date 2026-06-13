@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import StarRating from './StarRating'
-import { formatPrice } from '../utils/format'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * A single product tile. The whole card is a link to /product/:id.
  * Displays image, title, price and rating (spec requirement).
  */
 export default function ProductCard({ product }) {
+  const { formatPrice } = useLocale()
   return (
     <Link to={`/product/${product.id}`} className="card" aria-label={product.title}>
       <div className="card__media">

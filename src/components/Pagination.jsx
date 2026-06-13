@@ -2,7 +2,10 @@
  * Numbered pagination with Previous / Next.
  * Collapses long page lists with ellipses around the current page.
  */
+import { useLocale } from '../context/LocaleContext'
+
 export default function Pagination({ page, pageCount, onChange }) {
+  const { t } = useLocale()
   if (pageCount <= 1) return null
 
   const pages = buildPageList(page, pageCount)
@@ -14,7 +17,7 @@ export default function Pagination({ page, pageCount, onChange }) {
         onClick={() => onChange(page - 1)}
         disabled={page === 1}
       >
-        ← Previous
+        ← {t('pager.prev')}
       </button>
 
       {pages.map((p, i) =>
@@ -37,7 +40,7 @@ export default function Pagination({ page, pageCount, onChange }) {
         onClick={() => onChange(page + 1)}
         disabled={page === pageCount}
       >
-        Next →
+        {t('pager.next')} →
       </button>
     </nav>
   )

@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import ProductListPage from './pages/ProductListPage'
 import ProductDetailPage from './pages/ProductDetailPage'
+import { useLocale } from './context/LocaleContext'
 
 /**
  * App shell + route table.
@@ -9,6 +10,7 @@ import ProductDetailPage from './pages/ProductDetailPage'
  * changes — that's what keeps filters applied when returning from a detail page.
  */
 export default function App() {
+  const { t } = useLocale()
   return (
     <div className="app">
       <Navbar />
@@ -20,7 +22,7 @@ export default function App() {
         </Routes>
       </div>
       <footer className="footer">
-        Built for the Leegality Frontend Assessment · Data:{' '}
+        {t('footer.text')}{' '}
         <a href="https://dummyjson.com/docs/products" target="_blank" rel="noreferrer">
           DummyJSON
         </a>

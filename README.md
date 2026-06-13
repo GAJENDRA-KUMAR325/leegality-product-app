@@ -25,6 +25,11 @@ It demonstrates working with APIs, reusable components, state management, combin
 - Brand, category, availability, full description and customer reviews
 - **Back** button that returns to the listing **with all previous filters & page still applied**
 
+**Internationalization (i18n)**
+- Country picker in the navbar covering 10 countries / 9 languages (English, Hindi, German, French, Spanish, Portuguese, Japanese, Chinese, Arabic)
+- Switches **UI language**, **currency** (converted from USD + locale-aware `Intl` formatting, e.g. `₹58,157`, `643,08 €`, `¥5,068`) and **text direction** (RTL for Arabic)
+- Selection persists across reloads (localStorage) and is reflected on `<html lang/dir>`
+
 ---
 
 ## 🚀 Setup
@@ -117,6 +122,9 @@ This is a deliberate trade-off:
 **5. Every async surface has three states.**
 Loading (skeleton/spinner), error (with a retry that re-triggers the fetch), and empty (with a clear-filters action) are handled on both pages.
 
+**6. Locale as its own context, no i18n library.**
+`LocaleContext` is the single source of truth for language, currency and direction. It exposes `t(key, vars)` (dictionary lookup with English fallback) and `formatPrice(usd)` (convert + `Intl.NumberFormat`). Adding a country is one row in `i18n/locales.js`; adding a language is one block in `i18n/translations.js`. Currency uses a **static USD rate table** (`utils/currency.js`) — swapping it for a live FX fetch is a one-function change.
+
 ---
 
 ## 📌 Assumptions
@@ -126,6 +134,7 @@ Loading (skeleton/spinner), error (with a retry that re-triggers the fetch), and
 - **Price applies explicitly.** Min/Max commit on **Apply** or **Enter** (not on every keystroke) to avoid filtering on half-typed numbers — matching the mockup's Apply button. Category, brand and search apply instantly.
 - **Page size** is fixed at 8 cards per page (matches the mockup's 2×4 grid).
 - **Search** (by title) is an added convenience consistent with the mockup's search bar; it composes with the other filters.
+- **i18n scope:** the API serves product *content* (titles/descriptions) in English only, so those stay English; the app's own UI is fully translated and **all prices are localized** (converted + formatted per country). FX rates are a static table — see decision #6.
 
 ---
 
@@ -134,6 +143,7 @@ Loading (skeleton/spinner), error (with a retry that re-triggers the fetch), and
 - **Sync filters to the URL** (query params) so a filtered view is shareable/bookmarkable and survives a refresh.
 - **Server-side filtering & pagination** for large catalogues — push category/search to the API via `limit`/`skip`, with cursor handling. (Current client-side approach is intentional for this dataset size.)
 - **Caching** (React Query / SWR) for dedupe, background refresh and retry/back-off.
+- **Live FX rates + product-content translation** — replace the static rate table with a cached FX feed, and machine-translate API titles/descriptions (e.g. via a translation API) so product content is localized too, not just the UI.
 - **Tests** — unit tests for `utils/filtering.js` and component tests (Vitest + React Testing Library) for the filter interactions.
 - **Accessibility polish** — focus management on route change, keyboard-navigable gallery, ARIA live region wiring.
 - **Skeletons on the detail page** and image `srcset` for performance.

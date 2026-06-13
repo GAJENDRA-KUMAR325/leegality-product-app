@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { fetchProductById } from '../api/products'
-import { formatPrice } from '../utils/format'
+import { useLocale } from '../context/LocaleContext'
 import StarRating from '../components/StarRating'
 import { Loader, ErrorState } from '../components/States'
 
@@ -15,6 +15,7 @@ import { Loader, ErrorState } from '../components/States'
 export default function ProductDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t, formatPrice } = useLocale()
 
   const [product, setProduct] = useState(null)
   const [activeImage, setActiveImage] = useState(0)
@@ -48,7 +49,7 @@ export default function ProductDetailPage() {
     else navigate('/')
   }
 
-  if (loading) return <Loader label="Loading product…" />
+  if (loading) return <Loader label={t('state.loadingProduct')} />
   if (error)
     return <ErrorState message={error} onRetry={() => setReloadKey((k) => k + 1)} />
   if (!product) return null
@@ -58,7 +59,7 @@ export default function ProductDetailPage() {
   return (
     <div className="detail">
       <button className="btn detail__back" onClick={goBack}>
-        ← Back to results
+        ← {t('detail.back')}
       </button>
 
       <div className="detail__grid">
@@ -93,32 +94,35 @@ export default function ProductDetailPage() {
 
           <div className="detail__price-row">
             <span className="detail__price">{formatPrice(product.price)}</span>
-            <StarRating value={product.rating} count={`${product.reviews?.length ?? 0} reviews`} />
+            <StarRating
+              value={product.rating}
+              count={t('detail.reviewCount', { n: product.reviews?.length ?? 0 })}
+            />
           </div>
 
           <dl className="detail__attrs">
             <div>
-              <dt>Brand</dt>
+              <dt>{t('detail.brand')}</dt>
               <dd>{product.brand || '—'}</dd>
             </div>
             <div>
-              <dt>Category</dt>
+              <dt>{t('detail.category')}</dt>
               <dd className="capitalize">{product.category}</dd>
             </div>
             <div>
-              <dt>Availability</dt>
-              <dd>{product.availabilityStatus || (product.stock > 0 ? 'In Stock' : 'Out of Stock')}</dd>
+              <dt>{t('detail.availability')}</dt>
+              <dd>{product.stock > 0 ? t('detail.inStock') : t('detail.outOfStock')}</dd>
             </div>
           </dl>
 
           <section className="detail__section">
-            <h2 className="detail__heading">Description</h2>
+            <h2 className="detail__heading">{t('detail.description')}</h2>
             <p className="detail__desc">{product.description}</p>
           </section>
 
           {product.reviews?.length > 0 && (
             <section className="detail__section">
-              <h2 className="detail__heading">Reviews</h2>
+              <h2 className="detail__heading">{t('detail.reviews')}</h2>
               <ul className="reviews">
                 {product.reviews.map((r, i) => (
                   <li key={i} className="review">

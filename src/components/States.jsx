@@ -1,13 +1,16 @@
+import { useLocale } from '../context/LocaleContext'
+
 /**
  * Shared loading / error / empty UI states.
- * Centralised so every screen handles these consistently.
+ * Centralised so every screen handles these consistently — and localised.
  */
 
-export function Loader({ label = 'Loading products…' }) {
+export function Loader({ label }) {
+  const { t } = useLocale()
   return (
     <div className="state" role="status" aria-live="polite">
       <div className="spinner" aria-hidden="true" />
-      <p className="state__text">{label}</p>
+      <p className="state__text">{label || t('state.loading')}</p>
     </div>
   )
 }
@@ -30,13 +33,14 @@ export function GridSkeleton({ count = 8 }) {
 }
 
 export function ErrorState({ message, onRetry }) {
+  const { t } = useLocale()
   return (
     <div className="state state--error" role="alert">
       <div className="state__icon">⚠️</div>
-      <p className="state__text">{message || 'Something went wrong.'}</p>
+      <p className="state__text">{message || t('state.error')}</p>
       {onRetry && (
         <button className="btn btn--primary" onClick={onRetry}>
-          Try again
+          {t('state.retry')}
         </button>
       )}
     </div>
@@ -44,13 +48,14 @@ export function ErrorState({ message, onRetry }) {
 }
 
 export function EmptyState({ onReset }) {
+  const { t } = useLocale()
   return (
     <div className="state">
       <div className="state__icon">🔍</div>
-      <p className="state__text">No products match your filters.</p>
+      <p className="state__text">{t('state.empty')}</p>
       {onReset && (
         <button className="btn" onClick={onReset}>
-          Clear all filters
+          {t('state.clear')}
         </button>
       )}
     </div>
