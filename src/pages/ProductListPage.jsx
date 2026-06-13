@@ -8,9 +8,11 @@ import { translateText, isCached } from '../api/translate'
 import {
   extractBrands,
   applyFilters,
+  sortProducts,
   paginate,
   totalPages,
   PAGE_SIZE,
+  SORT_OPTIONS,
 } from '../utils/filtering'
 
 import Filters from '../components/Filters'
@@ -30,8 +32,8 @@ import { GridSkeleton, ErrorState, EmptyState } from '../components/States'
  * filters feel instant and the brand list always reflects the fetched scope.
  */
 export default function ProductListPage() {
-  const { filters, page, setPage, resetFilters } = useFilters()
-  const { country } = useLocale()
+  const { filters, page, setPage, resetFilters, updateFilters } = useFilters()
+  const { country, t } = useLocale()
   const { products, loading, error, reload } = useProducts(filters.category)
   const { categories } = useCategories()
 
@@ -51,7 +53,12 @@ export default function ProductListPage() {
     [products, filters.min, filters.max, filters.brands, debouncedSearch]
   )
 
-  const pageCount = totalPages(filtered.length)
+  const sorted = useMemo(
+    () => sortProducts(filtered, filters.sort),
+    [filtered, filters.sort]
+  )
+
+  const pageCount = totalPages(sorted.length)
 
   // Defensive clamp: if the result set shrinks below the current page, snap back.
   useEffect(() => {
@@ -59,8 +66,8 @@ export default function ProductListPage() {
   }, [page, pageCount, setPage])
 
   const pageItems = useMemo(
-    () => paginate(filtered, Math.min(page, pageCount), PAGE_SIZE),
-    [filtered, page, pageCount]
+    () => paginate(sorted, Math.min(page, pageCount), PAGE_SIZE),
+    [sorted, page, pageCount]
   )
 
   // --- Language switch: pre-translate the visible page, show a loader until
@@ -100,7 +107,7 @@ export default function ProductListPage() {
     <div className="layout">
       <Filters categories={categories} brands={brands} resultCount={filtered.length} />
 
-      <main className="content" aria-busy={loading}>
+      <div className="content" aria-busy={loading || !localized}>
         {error ? (
           <ErrorState message={error} onRetry={reload} />
         ) : loading || !localized ? (
@@ -109,6 +116,26 @@ export default function ProductListPage() {
           <EmptyState onReset={resetFilters} />
         ) : (
           <>
+            <div className="toolbar">
+              <span className="toolbar__count" role="status" aria-live="polite">
+                {t('filters.results', { n: filtered.length })}
+              </span>
+              <label className="toolbar__sort">
+                <span className="toolbar__sort-label">{t('sort.label')}</span>
+                <select
+                  className="select"
+                  value={filters.sort}
+                  onChange={(e) => updateFilters({ sort: e.target.value })}
+                  aria-label={t('sort.label')}
+                >
+                  {SORT_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {t(`sort.${opt}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
             <ProductGrid products={pageItems} />
             <Pagination
               page={Math.min(page, pageCount)}
@@ -117,7 +144,7 @@ export default function ProductListPage() {
             />
           </>
         )}
-      </main>
+      </div>
     </div>
   )
 }

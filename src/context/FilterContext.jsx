@@ -1,55 +1,80 @@
-import { createContext, useContext, useState, useCallback, useMemo } from 'react'
+import { createContext, useContext, useCallback, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 /**
- * Holds all listing-page filter state above the route tree.
+ * Filter state, stored in the URL query string (the single source of truth).
  *
- * Why context (not local page state): the spec requires that previously
- * selected filters remain applied after navigating to a product and back.
- * Because this provider sits above <Routes>, it survives route changes, so the
- * listing page restores exactly where the user left it — including page number.
+ * Why the URL: it makes any filtered view shareable, bookmarkable and
+ * refresh-proof, and it satisfies "previously selected filters remain applied
+ * when navigating back" for free — the browser restores the query on Back.
+ *
+ * Query shape:  ?category=&min=&max=&brands=a,b&q=&sort=&page=
+ * Updates use { replace: true } so typing/toggling filters doesn't spam the
+ * history stack (Back still steps between pages/products, not keystrokes).
  */
-
-const DEFAULT_FILTERS = {
-  category: '', // category slug ('' = all)
-  min: '', // price min (string from input)
-  max: '', // price max
-  brands: [], // selected brand names (multi-select)
-  search: '', // free-text title search
-}
-
 const FilterContext = createContext(null)
 
+function parseFilters(params) {
+  return {
+    category: params.get('category') || '',
+    min: params.get('min') || '',
+    max: params.get('max') || '',
+    brands: params.get('brands') ? params.get('brands').split(',').filter(Boolean) : [],
+    search: params.get('q') || '',
+    sort: params.get('sort') || 'featured',
+  }
+}
+
+/** Build a clean query object, omitting empty/default values for tidy URLs. */
+function buildParams(filters, page) {
+  const p = {}
+  if (filters.category) p.category = filters.category
+  if (filters.min) p.min = filters.min
+  if (filters.max) p.max = filters.max
+  if (filters.brands.length) p.brands = filters.brands.join(',')
+  if (filters.search) p.q = filters.search
+  if (filters.sort && filters.sort !== 'featured') p.sort = filters.sort
+  if (page > 1) p.page = String(page)
+  return p
+}
+
 export function FilterProvider({ children }) {
-  const [filters, setFilters] = useState(DEFAULT_FILTERS)
-  const [page, setPage] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  /**
-   * Update one or more filter fields. Any filter change resets pagination to
-   * page 1 (spec: "Pagination should reset when filters change").
-   */
-  const updateFilters = useCallback((patch) => {
-    setFilters((prev) => ({ ...prev, ...patch }))
-    setPage(1)
-  }, [])
+  const filters = useMemo(() => parseFilters(searchParams), [searchParams])
+  const page = Number(searchParams.get('page')) || 1
 
-  const toggleBrand = useCallback((brand) => {
-    setFilters((prev) => {
-      const next = prev.brands.includes(brand)
-        ? prev.brands.filter((b) => b !== brand)
-        : [...prev.brands, brand]
-      return { ...prev, brands: next }
-    })
-    setPage(1)
-  }, [])
+  const write = useCallback(
+    (nextFilters, nextPage) => {
+      setSearchParams(buildParams(nextFilters, nextPage), { replace: true })
+    },
+    [setSearchParams]
+  )
 
-  const resetFilters = useCallback(() => {
-    setFilters(DEFAULT_FILTERS)
-    setPage(1)
-  }, [])
+  // Any filter change resets pagination to page 1 (spec requirement).
+  const updateFilters = useCallback(
+    (patch) => write({ ...filters, ...patch }, 1),
+    [filters, write]
+  )
+
+  const toggleBrand = useCallback(
+    (brand) => {
+      const brands = filters.brands.includes(brand)
+        ? filters.brands.filter((b) => b !== brand)
+        : [...filters.brands, brand]
+      write({ ...filters, brands }, 1)
+    },
+    [filters, write]
+  )
+
+  // Page changes keep the filters but don't reset the page.
+  const setPage = useCallback((next) => write(filters, next), [filters, write])
+
+  const resetFilters = useCallback(() => setSearchParams({}, { replace: true }), [setSearchParams])
 
   const value = useMemo(
     () => ({ filters, page, setPage, updateFilters, toggleBrand, resetFilters }),
-    [filters, page, updateFilters, toggleBrand, resetFilters]
+    [filters, page, setPage, updateFilters, toggleBrand, resetFilters]
   )
 
   return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>

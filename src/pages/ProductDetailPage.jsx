@@ -1,4 +1,4 @@
-import { useEffect, useState, useReducer } from 'react'
+import { useEffect, useState, useReducer, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { fetchProductById } from '../api/products'
 import { useLocale } from '../context/LocaleContext'
@@ -19,6 +19,7 @@ export default function ProductDetailPage() {
   const navigate = useNavigate()
   const { t, formatPrice, country } = useLocale()
 
+  const headingRef = useRef(null)
   const [product, setProduct] = useState(null)
   const [activeImage, setActiveImage] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -75,6 +76,12 @@ export default function ProductDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localized, product, country.lang])
 
+  // Move focus to the product heading once it's shown, so keyboard/screen-reader
+  // users aren't left at the top of the document after navigating in.
+  useEffect(() => {
+    if (product && localized) headingRef.current?.focus()
+  }, [product, localized, id])
+
   // Return to listing; falls back to home if there's no history to pop.
   const goBack = () => {
     if (window.history.length > 1) navigate(-1)
@@ -123,7 +130,9 @@ export default function ProductDetailPage() {
 
         {/* Info */}
         <div className="detail__info">
-          <h1 className="detail__title">{title}</h1>
+          <h1 className="detail__title" ref={headingRef} tabIndex={-1}>
+            {title}
+          </h1>
 
           <div className="detail__price-row">
             <span className="detail__price">{formatPrice(product.price)}</span>

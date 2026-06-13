@@ -24,6 +24,46 @@
   box-sizing: border-box;
 }
 
+/* Accessibility: skip link, visible only when focused */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 0 0 8px 8px;
+  transition: top 0.18s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Visible, consistent keyboard focus ring (only for keyboard users) */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+#main-content:focus {
+  outline: none;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 html,
 body {
   margin: 0;
@@ -448,6 +488,55 @@ h3 {
 }
 .btn--block {
   width: 100%;
+}
+
+/* ============================================================
+   Results toolbar (count + sort)
+   ============================================================ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.toolbar__count {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.toolbar__sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.select {
+  border: 1px solid #b7c0c4;
+  border-radius: 8px;
+  padding: 7px 30px 7px 10px;
+  font-size: 13px;
+  background: #fff
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23565959' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 10px center;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  color: var(--ink);
+}
+.select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+[dir='rtl'] .select {
+  padding: 7px 10px 7px 30px;
+  background-position: left 10px center;
 }
 
 /* ============================================================

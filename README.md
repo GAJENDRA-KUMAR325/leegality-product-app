@@ -1,35 +1,42 @@
 # 🛒 ShopKart — Product Listing & Detail App
 
-An Amazon-style e-commerce product catalogue built for the **Leegality Frontend Engineer Assessment**, powered by the public [DummyJSON Products API](https://dummyjson.com/docs/products).
+> Amazon-style e-commerce catalogue built on the [DummyJSON API](https://dummyjson.com/docs/products) for the **Leegality Frontend Engineer Assessment**.
 
-It demonstrates working with APIs, reusable components, state management, combined filtering, routing and clean, maintainable structure.
+A production-minded React app demonstrating API integration, reusable components, state management, combined filtering, routing — and going further with a full **internationalization layer** (language + currency + RTL + machine-translated product content), **URL-synced filters**, **tests**, and **accessibility**.
+
+![Product listing](docs/screenshots/listing.png)
 
 ---
 
-## ✨ Features
+## ✨ Highlights
 
-**Product Listing Page**
-- Responsive product grid (image, title, price, rating, discount badge)
-- Left-hand filter rail with **combined filtering**:
-  - **Category** — fetched dynamically from `/products/categories` (single-select)
-  - **Price range** — Min / Max inputs (apply on click or Enter)
-  - **Brand** — multi-select, extracted live from the fetched products
-  - **Search** — debounced title search (bonus)
-- Filters work **together** and update the list **immediately**
-- **Pagination resets** automatically whenever a filter changes
-- Numbered pagination with Previous / Next and ellipsis collapsing
-- Proper **loading** (skeleton grid + spinner), **error** (with retry) and **empty** states
+| | |
+| --- | --- |
+| 🔎 **Combined filtering** | Category · price range · multi-brand · search — all compose, update instantly, and reset pagination |
+| 🔗 **URL-synced state** | Filters/sort/page live in the query string → **shareable, bookmarkable, refresh-proof** |
+| ↕️ **Sorting** | Featured · price ↑/↓ · top-rated · name |
+| 🌍 **Internationalization** | 10 countries / 9 languages, **currency conversion**, **RTL**, and **machine-translated product content** |
+| ♿ **Accessibility** | Skip link, focus management, keyboard nav, ARIA, reduced-motion, semantic landmarks |
+| 🧪 **Tested** | Vitest + React Testing Library — unit + integration (18 tests) |
+| ⏳ **Robust states** | Loading skeletons, error + retry, empty state on every async surface |
+| 🚀 **CI + deploy-ready** | GitHub Actions (build + test) and Vercel/Netlify SPA config |
 
-**Product Detail Page** (`/product/:id`)
-- Image gallery with thumbnails, name, price, rating
-- Brand, category, availability, full description and customer reviews
-- **Back** button that returns to the listing **with all previous filters & page still applied**
+### 🌍 The standout: real internationalization
 
-**Internationalization (i18n)**
-- Country picker in the navbar covering 10 countries / 9 languages (English, Hindi, German, French, Spanish, Portuguese, Japanese, Chinese, Arabic)
-- Switches **UI language**, **currency** (converted from USD + locale-aware `Intl` formatting, e.g. `₹58,157`, `643,08 €`, `¥5,068`) and **text direction** (RTL for Arabic)
-- **Product content is also translated** — titles, descriptions and category names are machine-translated at runtime (MyMemory, no API key), cached in memory + localStorage, with a fail-soft fallback to English
-- Selection persists across reloads (localStorage) and is reflected on `<html lang/dir>`
+Pick a country and the **entire app** adapts — UI language, currency (converted from USD + locale-aware formatting), text **direction**, and even the **product titles/descriptions** (machine-translated at runtime). Here's the same catalogue in Arabic — note the fully **mirrored RTL layout**, Arabic product names, and SAR pricing in Arabic numerals:
+
+![Arabic / RTL](docs/screenshots/i18n-arabic.png)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/detail.png" alt="Product detail" /></td>
+<td width="50%"><img src="docs/screenshots/filters.png" alt="Filtered + sorted" /></td>
+</tr>
+<tr>
+<td align="center"><em>Detail page — gallery, reviews, brand/category</em></td>
+<td align="center"><em>Category filter + price-high-to-low sort (URL-driven)</em></td>
+</tr>
+</table>
 
 ---
 
@@ -38,32 +45,32 @@ It demonstrates working with APIs, reusable components, state management, combin
 **Prerequisites:** Node.js ≥ 18
 
 ```bash
-# 1. Install dependencies
 npm install
+npm run dev        # → http://localhost:5173
 
-# 2. Start the dev server  → http://localhost:5173
-npm run dev
-
-# 3. Production build + local preview
-npm run build
-npm run preview
+npm run build      # production build
+npm run preview    # serve the build locally
+npm test           # watch mode
+npm run test:run   # single run (used by CI)
 ```
 
-No environment variables or API keys are required — the DummyJSON API is public.
+No API keys or env vars required — DummyJSON and the translation API are public.
 
 ---
 
 ## 🧱 Tech Stack
 
-| Concern        | Choice                                  |
-| -------------- | --------------------------------------- |
-| Framework      | React 18 (functional components + hooks) |
-| Build tool     | Vite 5                                  |
-| Routing        | React Router v6                         |
-| State          | Context API + local component state     |
-| Styling        | Hand-written CSS (no UI library)        |
+| Concern    | Choice |
+| ---------- | ------ |
+| Framework  | React 18 (functional components + hooks) |
+| Build      | Vite 5 |
+| Routing    | React Router v6 |
+| State      | Context API + the URL (query string) |
+| i18n       | Custom `LocaleContext` — **no i18n library** |
+| Styling    | Hand-written CSS (no UI library) |
+| Testing    | Vitest + React Testing Library |
 
-> Per the brief, no heavy UI library was used — styling is a single, token-driven stylesheet.
+> Per the brief, no heavy UI library is used.
 
 ---
 
@@ -72,95 +79,86 @@ No environment variables or API keys are required — the DummyJSON API is publi
 ```
 src/
 ├── api/
-│   └── products.js          # Single network layer over DummyJSON
-├── components/
-│   ├── Navbar.jsx
-│   ├── Filters.jsx          # Category / price / brand / search rail
-│   ├── ProductCard.jsx      # Reusable product tile (links to detail)
-│   ├── ProductGrid.jsx
-│   ├── Pagination.jsx       # Numbered pagination w/ ellipses
-│   ├── StarRating.jsx       # Reusable half-star rating
-│   └── States.jsx           # Loader / Skeleton / Error / Empty
+│   ├── products.js        # DummyJSON network layer
+│   └── translate.js       # runtime translation (cache + dedupe + fail-soft)
+├── components/            # Navbar, Filters, ProductCard, Pagination,
+│   │                      # StarRating, LocaleSwitcher, TranslatedText, States…
+│   └── *.test.jsx
 ├── context/
-│   └── FilterContext.jsx    # Filter + page state held above the router
-├── hooks/
-│   ├── useProducts.js       # Loads product scope for a category
-│   ├── useCategories.js     # Loads category list once
-│   └── useDebounce.js       # Debounces the search input
+│   ├── FilterContext.jsx  # filters/sort/page ↔ URL query string
+│   └── LocaleContext.jsx  # language + currency + direction
+├── hooks/                 # useProducts, useCategories, useDebounce, useTranslated
+├── i18n/                  # locales.js (countries) + translations.js (dictionaries)
 ├── pages/
-│   ├── ProductListPage.jsx  # Listing: data flow + filter pipeline
-│   └── ProductDetailPage.jsx
-├── utils/
-│   ├── filtering.js         # Pure filter / brand / pagination helpers
-│   └── format.js            # Price formatting
-├── App.jsx                  # Shell + routes
-├── main.jsx                 # Providers (Router → FilterProvider → App)
-└── index.css                # Design tokens + all styling
+│   ├── ProductListPage.jsx
+│   ├── ProductDetailPage.jsx
+│   └── ProductListPage.test.jsx
+├── utils/                 # filtering.js (pure) + currency.js
+└── test/setup.js
 ```
 
 ---
 
 ## 🏛 Architectural Decisions
 
-**1. One API module.**
-All `fetch` calls live in `src/api/products.js` with a shared `request()` helper for JSON parsing and consistent error messages. The rest of the app never touches `fetch` directly, so the data source can be swapped or cached in one place.
+1. **One API module.** All `fetch` lives in `api/` behind a small surface, so the data source/caching can change in one place.
+2. **Filters live in the URL.** `FilterContext` reads/writes the query string via `useSearchParams`, making views shareable and satisfying *"filters remain applied when navigating back"* via native history.
+3. **Fetch the scope once, filter/sort/paginate on the client.** The catalogue is small (~194), so category selection hits the API (`limit=0`) and everything else is in-memory — correct combined filtering and instant feedback. (Scaling path: push to server `limit`/`skip`.)
+4. **Pure, tested logic.** `utils/filtering.js` is side-effect-free (`applyFilters`, `sortProducts`, `extractBrands`, `paginate`) and unit-tested.
+5. **Locale as its own context, no library.** `t(key)` + `formatPrice(usd)` + `dir`; adding a country = one row, a language = one block.
+6. **Runtime translation with a cache.** `api/translate.js` (MyMemory, no key) caches in memory + localStorage, de-dupes in-flight requests, and fails soft to English. A synchronous `isCached` check lets the UI show a loader and reveal only once content is ready — no English-first flash.
 
-**2. Filter state lives above the router.**
-`FilterProvider` wraps `<Routes>`, so filter selections and the current page survive navigation. This is what makes *"previously selected filters remain applied when navigating back"* work for free — the listing page simply re-reads the same context when you return from a product.
+---
 
-**3. Fetch the category scope once, filter & paginate on the client.**
-The catalogue is small (~194 products). When a category is selected the app fetches that whole category (`limit=0`); otherwise it fetches the full catalogue once. **Only a category change triggers a network request** — price, brand and search filtering plus pagination then run in memory.
+## ♿ Accessibility
 
-This is a deliberate trade-off:
-- ✅ Combined filters are always **correct** — brand/price never operate on a partial page.
-- ✅ The brand list always reflects the actual fetched scope (`extractBrands`).
-- ✅ Filtering and paging feel instant (no loading flash on every tweak).
-- ⚠️ It assumes a small dataset. The scaling path is documented below.
+Skip-to-content link · single `<main>` landmark · focus moved to the product heading on navigation · visible keyboard focus rings (`:focus-visible`) · ARIA labels on controls and an `aria-live` result count · `prefers-reduced-motion` respected · semantic, keyboard-operable filters and pagination.
 
-**4. Pure, testable logic.**
-`utils/filtering.js` (`applyFilters`, `extractBrands`, `paginate`, `totalPages`) is plain, side-effect-free JavaScript — easy to reason about and unit-test independently of React.
+---
 
-**5. Every async surface has three states.**
-Loading (skeleton/spinner), error (with a retry that re-triggers the fetch), and empty (with a clear-filters action) are handled on both pages.
+## 🧪 Testing
 
-**6. Locale as its own context, no i18n library.**
-`LocaleContext` is the single source of truth for language, currency and direction. It exposes `t(key, vars)` (dictionary lookup with English fallback) and `formatPrice(usd)` (convert + `Intl.NumberFormat`). Adding a country is one row in `i18n/locales.js`; adding a language is one block in `i18n/translations.js`. Currency uses a **static USD rate table** (`utils/currency.js`) — swapping it for a live FX fetch is a one-function change.
+```bash
+npm run test:run
+```
+
+- **Unit** (`utils/filtering.test.js`) — price/brand/search filtering, AND-composition, sorting (with no-mutation guarantee), pagination.
+- **Component** (`StarRating.test.jsx`) — rendering + accessible labels.
+- **Integration** (`ProductListPage.test.jsx`) — mounts the page with mocked API, asserts the grid renders, that **selecting a brand filters the grid**, and that **sorting reorders** it.
 
 ---
 
 ## 📌 Assumptions
 
-- **Category is single-select.** The DummyJSON `category/{slug}` endpoint serves one category, so categories are modelled as radio options with an *"All categories"* default. Brands remain multi-select as allowed by the brief.
-- **Brands are derived per scope.** Only ~half of DummyJSON products carry a `brand`; the brand list shows the unique brands present in the currently fetched scope. Selecting a brand excludes products that have no brand.
-- **Price applies explicitly.** Min/Max commit on **Apply** or **Enter** (not on every keystroke) to avoid filtering on half-typed numbers — matching the mockup's Apply button. Category, brand and search apply instantly.
-- **Page size** is fixed at 8 cards per page (matches the mockup's 2×4 grid).
-- **Search** (by title) is an added convenience consistent with the mockup's search bar; it composes with the other filters.
-- **i18n scope:** the app's own UI is fully translated, **all prices are localized**, and product **content (titles, descriptions, categories and brands) is machine-translated at runtime** with caching. For brands the *displayed* text is translated/transliterated while the original English brand stays the **filter key**, so brand filtering keeps working across languages. Machine translation is best-effort — quality varies by language, and brand proper nouns may transliterate rather than translate. On a language switch the page shows a loader and reveals only once all visible content is translated (no English-first flash); results are cached so revisits are instant. FX rates are a static table — see decision #6.
+- **Category** is single-select (DummyJSON serves one category per endpoint); brands are multi-select.
+- **Brands** are derived from the fetched scope; only ~half of products have one, and a selected brand excludes brand-less products. Translated brand text is display-only — the English brand stays the filter key.
+- **Price** commits on Apply/Enter (not per keystroke); category/brand/search/sort apply instantly.
+- **Page size** is 8 (matches the 2×4 mockup).
+- **i18n scope:** UI + prices + product content are localized. Machine translation is best-effort (brands may transliterate); a language switch shows a loader and reveals once everything's ready, then caches. FX rates are a static table (see decision #6) — swap for a live feed in production.
 
 ---
 
-## 🔭 Improvements With More Time
+## 🔭 With More Time
 
-- **Sync filters to the URL** (query params) so a filtered view is shareable/bookmarkable and survives a refresh.
-- **Server-side filtering & pagination** for large catalogues — push category/search to the API via `limit`/`skip`, with cursor handling. (Current client-side approach is intentional for this dataset size.)
-- **Caching** (React Query / SWR) for dedupe, background refresh and retry/back-off.
-- **Live FX rates + product-content translation** — replace the static rate table with a cached FX feed, and machine-translate API titles/descriptions (e.g. via a translation API) so product content is localized too, not just the UI.
-- **Tests** — unit tests for `utils/filtering.js` and component tests (Vitest + React Testing Library) for the filter interactions.
-- **Accessibility polish** — focus management on route change, keyboard-navigable gallery, ARIA live region wiring.
-- **Skeletons on the detail page** and image `srcset` for performance.
-- **TypeScript** for end-to-end type safety on the API models.
+- Sync filters to the URL ✅ *(done)* → next: server-side filtering/pagination for large catalogues.
+- React Query/SWR for caching, retry/back-off and request dedupe.
+- Live FX rates + a keyed translation provider (DeepL/Google) or server-side pre-translation.
+- TypeScript for end-to-end typed API models.
+- More tests (detail page, locale switching) + Playwright e2e; image `srcset`.
 
 ---
 
-## 📡 API Endpoints Used
+## 📡 API Endpoints
 
-| Purpose            | Endpoint                                    |
-| ------------------ | ------------------------------------------- |
-| Catalogue / scope  | `GET /products?limit=0`                     |
-| Category scope     | `GET /products/category/{slug}?limit=0`     |
-| Category list      | `GET /products/categories`                  |
-| Product detail     | `GET /products/{id}`                        |
+| Purpose         | Endpoint |
+| --------------- | -------- |
+| Catalogue/scope | `GET /products?limit=0` |
+| Category scope  | `GET /products/category/{slug}?limit=0` |
+| Categories      | `GET /products/categories` |
+| Product detail  | `GET /products/{id}` |
+| Translation     | `GET https://api.mymemory.translated.net/get` (free, no key) |
 
 ---
 
 Built with care for the Leegality Frontend Assessment.
+*(Regenerate screenshots: `npm run dev`, then `npm i -D playwright && npx playwright install chromium && node scripts/screenshot.mjs`.)*

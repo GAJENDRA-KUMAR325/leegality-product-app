@@ -13,14 +13,17 @@ export default function App() {
   const { t } = useLocale()
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">
+        {t('a11y.skip')}
+      </a>
       <Navbar />
-      <div className="app__main">
+      <main id="main-content" className="app__main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<ProductListPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </div>
+      </main>
       <footer className="footer">
         {t('footer.text')}{' '}
         <a href="https://dummyjson.com/docs/products" target="_blank" rel="noreferrer">

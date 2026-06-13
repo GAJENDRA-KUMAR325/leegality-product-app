@@ -42,6 +42,13 @@ export const TRANSLATIONS = {
     'detail.reviews': 'Reviews',
     'detail.reviewCount': '{n} reviews',
     'footer.text': 'Built for the Leegality Frontend Assessment · Data:',
+    'sort.label': 'Sort by',
+    'sort.featured': 'Featured',
+    'sort.price-asc': 'Price: Low to High',
+    'sort.price-desc': 'Price: High to Low',
+    'sort.rating-desc': 'Top Rated',
+    'sort.title-asc': 'Name: A–Z',
+    'a11y.skip': 'Skip to main content',
   },
 
   hi: {
@@ -79,6 +86,12 @@ export const TRANSLATIONS = {
     'detail.reviews': 'समीक्षाएँ',
     'detail.reviewCount': '{n} समीक्षाएँ',
     'footer.text': 'Leegality फ्रंटएंड असेसमेंट के लिए बनाया गया · डेटा:',
+    'sort.label': 'क्रमबद्ध करें',
+    'sort.featured': 'विशेष',
+    'sort.price-asc': 'मूल्य: कम से अधिक',
+    'sort.price-desc': 'मूल्य: अधिक से कम',
+    'sort.rating-desc': 'सर्वाधिक रेटेड',
+    'sort.title-asc': 'नाम: अ–ज्ञ',
   },
 
   de: {
@@ -116,6 +129,12 @@ export const TRANSLATIONS = {
     'detail.reviews': 'Bewertungen',
     'detail.reviewCount': '{n} Bewertungen',
     'footer.text': 'Erstellt für das Leegality Frontend Assessment · Daten:',
+    'sort.label': 'Sortieren nach',
+    'sort.featured': 'Empfohlen',
+    'sort.price-asc': 'Preis: aufsteigend',
+    'sort.price-desc': 'Preis: absteigend',
+    'sort.rating-desc': 'Top bewertet',
+    'sort.title-asc': 'Name: A–Z',
   },
 
   fr: {
@@ -153,6 +172,12 @@ export const TRANSLATIONS = {
     'detail.reviews': 'Avis',
     'detail.reviewCount': '{n} avis',
     'footer.text': "Réalisé pour l'évaluation Frontend Leegality · Données :",
+    'sort.label': 'Trier par',
+    'sort.featured': 'En vedette',
+    'sort.price-asc': 'Prix : croissant',
+    'sort.price-desc': 'Prix : décroissant',
+    'sort.rating-desc': 'Mieux notés',
+    'sort.title-asc': 'Nom : A–Z',
   },
 
   es: {
@@ -190,6 +215,12 @@ export const TRANSLATIONS = {
     'detail.reviews': 'Reseñas',
     'detail.reviewCount': '{n} reseñas',
     'footer.text': 'Creado para la evaluación Frontend de Leegality · Datos:',
+    'sort.label': 'Ordenar por',
+    'sort.featured': 'Destacados',
+    'sort.price-asc': 'Precio: de menor a mayor',
+    'sort.price-desc': 'Precio: de mayor a menor',
+    'sort.rating-desc': 'Mejor valorados',
+    'sort.title-asc': 'Nombre: A–Z',
   },
 
   pt: {
@@ -227,6 +258,12 @@ export const TRANSLATIONS = {
     'detail.reviews': 'Avaliações',
     'detail.reviewCount': '{n} avaliações',
     'footer.text': 'Feito para a avaliação Frontend da Leegality · Dados:',
+    'sort.label': 'Ordenar por',
+    'sort.featured': 'Destaques',
+    'sort.price-asc': 'Preço: do menor ao maior',
+    'sort.price-desc': 'Preço: do maior ao menor',
+    'sort.rating-desc': 'Mais bem avaliados',
+    'sort.title-asc': 'Nome: A–Z',
   },
 
   ja: {
@@ -264,6 +301,12 @@ export const TRANSLATIONS = {
     'detail.reviews': 'レビュー',
     'detail.reviewCount': '{n} 件のレビュー',
     'footer.text': 'Leegality フロントエンド課題のために作成 · データ：',
+    'sort.label': '並び替え',
+    'sort.featured': 'おすすめ',
+    'sort.price-asc': '価格：安い順',
+    'sort.price-desc': '価格：高い順',
+    'sort.rating-desc': '評価の高い順',
+    'sort.title-asc': '名前：A–Z',
   },
 
   zh: {
@@ -301,6 +344,12 @@ export const TRANSLATIONS = {
     'detail.reviews': '评论',
     'detail.reviewCount': '{n} 条评论',
     'footer.text': '为 Leegality 前端测评而构建 · 数据：',
+    'sort.label': '排序方式',
+    'sort.featured': '推荐',
+    'sort.price-asc': '价格：从低到高',
+    'sort.price-desc': '价格：从高到低',
+    'sort.rating-desc': '评分最高',
+    'sort.title-asc': '名称：A–Z',
   },
 
   ar: {
@@ -338,5 +387,11 @@ export const TRANSLATIONS = {
     'detail.reviews': 'المراجعات',
     'detail.reviewCount': '{n} مراجعة',
     'footer.text': 'تم إنشاؤه لتقييم Leegality للواجهة الأمامية · البيانات:',
+    'sort.label': 'ترتيب حسب',
+    'sort.featured': 'مميز',
+    'sort.price-asc': 'السعر: من الأقل إلى الأعلى',
+    'sort.price-desc': 'السعر: من الأعلى إلى الأقل',
+    'sort.rating-desc': 'الأعلى تقييمًا',
+    'sort.title-asc': 'الاسم: أ–ي',
   },
 }
