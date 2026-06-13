@@ -55,6 +55,12 @@ h3 {
   text-transform: capitalize;
 }
 
+/* Dynamic content being machine-translated: fade subtly until it resolves. */
+[data-translating] {
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+
 /* ============================================================
    App shell
    ============================================================ */

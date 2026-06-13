@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { fetchProductById } from '../api/products'
 import { useLocale } from '../context/LocaleContext'
+import { useTranslated } from '../hooks/useTranslated'
 import StarRating from '../components/StarRating'
 import { Loader, ErrorState } from '../components/States'
 
@@ -42,6 +43,12 @@ export default function ProductDetailPage() {
       cancelled = true
     }
   }, [id, reloadKey])
+
+  // Translate the English API content into the active language (no-op for en).
+  // Called unconditionally (before early returns) to keep hook order stable.
+  const { text: title } = useTranslated(product?.title)
+  const { text: description, translating: descTranslating } = useTranslated(product?.description)
+  const { text: category } = useTranslated(product?.category)
 
   // Return to listing; falls back to home if there's no history to pop.
   const goBack = () => {
@@ -90,7 +97,7 @@ export default function ProductDetailPage() {
 
         {/* Info */}
         <div className="detail__info">
-          <h1 className="detail__title">{product.title}</h1>
+          <h1 className="detail__title">{title}</h1>
 
           <div className="detail__price-row">
             <span className="detail__price">{formatPrice(product.price)}</span>
@@ -107,7 +114,7 @@ export default function ProductDetailPage() {
             </div>
             <div>
               <dt>{t('detail.category')}</dt>
-              <dd className="capitalize">{product.category}</dd>
+              <dd className="capitalize">{category}</dd>
             </div>
             <div>
               <dt>{t('detail.availability')}</dt>
@@ -117,7 +124,9 @@ export default function ProductDetailPage() {
 
           <section className="detail__section">
             <h2 className="detail__heading">{t('detail.description')}</h2>
-            <p className="detail__desc">{product.description}</p>
+            <p className="detail__desc" data-translating={descTranslating || undefined}>
+              {description}
+            </p>
           </section>
 
           {product.reviews?.length > 0 && (

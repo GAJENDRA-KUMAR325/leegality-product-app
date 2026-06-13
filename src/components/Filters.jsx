@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useFilters } from '../context/FilterContext'
 import { useLocale } from '../context/LocaleContext'
+import TranslatedText from './TranslatedText'
 
 /**
  * Left-hand filter rail: search, category (single-select), price range and
@@ -76,7 +77,7 @@ export default function Filters({ categories, brands, resultCount }) {
                 checked={filters.category === c.slug}
                 onChange={() => updateFilters({ category: c.slug })}
               />
-              <span>{c.name}</span>
+              <TranslatedText text={c.name} />
             </label>
           ))}
         </div>
