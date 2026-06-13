@@ -3,7 +3,8 @@
 [![CI](https://github.com/GAJENDRA-KUMAR325/leegality-product-app/actions/workflows/ci.yml/badge.svg)](https://github.com/GAJENDRA-KUMAR325/leegality-product-app/actions/workflows/ci.yml)
 ![React](https://img.shields.io/badge/React-18-149eca)
 ![Vite](https://img.shields.io/badge/Vite-5-646cff)
-![Tests](https://img.shields.io/badge/tests-18%20passing-3fb950)
+![Tests](https://img.shields.io/badge/tests-31%20passing-3fb950)
+![Coverage](https://img.shields.io/badge/coverage-72%25-brightgreen)
 
 > Amazon-style e-commerce catalogue built on the [DummyJSON API](https://dummyjson.com/docs/products) for the **Leegality Frontend Engineer Assessment**.
 >
@@ -25,8 +26,8 @@ A production-minded React app demonstrating API integration, reusable components
 | 🌍 **Internationalization** | 10 countries / 9 languages, **currency conversion**, **RTL**, and **machine-translated product content** |
 | ♿ **Accessibility** | Skip link, focus management, keyboard nav, ARIA, reduced-motion, semantic landmarks |
 | 🧪 **Tested** | Vitest + React Testing Library — unit + integration (18 tests) |
-| ⏳ **Robust states** | Loading skeletons, error + retry, empty state on every async surface |
-| 🚀 **CI + deploy-ready** | GitHub Actions (build + test) and Vercel/Netlify SPA config |
+| ⏳ **Robust states** | Loading skeletons, error + retry, empty state on every async surface — plus a top-level **error boundary** |
+| 🚀 **CI + coverage** | GitHub Actions runs build + tests with a **coverage gate**; Vercel/Netlify SPA config included |
 
 ### 🌍 The standout: real internationalization
 
@@ -88,8 +89,8 @@ src/
 ├── api/
 │   ├── products.js        # DummyJSON network layer
 │   └── translate.js       # runtime translation (cache + dedupe + fail-soft)
-├── components/            # Navbar, Filters, ProductCard, Pagination,
-│   │                      # StarRating, LocaleSwitcher, TranslatedText, States…
+├── components/            # Navbar, Filters, ProductCard, Pagination, StarRating,
+│   │                      # LocaleSwitcher, TranslatedText, States, ErrorBoundary…
 │   └── *.test.jsx
 ├── context/
 │   ├── FilterContext.jsx  # filters/sort/page ↔ URL query string
@@ -123,15 +124,19 @@ Skip-to-content link · single `<main>` landmark · focus moved to the product h
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & coverage
 
 ```bash
-npm run test:run
+npm run test:run        # run the suite once (31 tests)
+npm run test:coverage   # run with a V8 coverage report (HTML in coverage/)
 ```
 
-- **Unit** (`utils/filtering.test.js`) — price/brand/search filtering, AND-composition, sorting (with no-mutation guarantee), pagination.
-- **Component** (`StarRating.test.jsx`) — rendering + accessible labels.
-- **Integration** (`ProductListPage.test.jsx`) — mounts the page with mocked API, asserts the grid renders, that **selecting a brand filters the grid**, and that **sorting reorders** it.
+**31 tests across unit, component and integration levels:**
+- **Unit** — `utils/filtering.test.js` (price/brand/search filtering, AND-composition, sorting with a no-mutation guarantee, pagination) and `utils/currency.test.js` (conversion + locale-aware formatting).
+- **Component** — `StarRating.test.jsx` (rendering + accessible labels) and `Pagination.test.jsx` (disabled states, page selection, `aria-current`, ellipsis collapsing).
+- **Integration** — `ProductListPage.test.jsx` mounts the page with a mocked API and asserts the grid renders, that **selecting a brand filters the grid**, and that **sorting reorders** it.
+
+Coverage is **gated in CI** (statements/branches/lines ≥ 70%, functions ≥ 50% — see `vite.config.js`); the report uploads as a build artifact on every run. The core logic (`filtering`, `currency`, contexts) sits at 95–100%.
 
 ---
 

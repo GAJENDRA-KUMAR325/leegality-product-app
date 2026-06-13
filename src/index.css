@@ -901,6 +901,35 @@ h3 {
 }
 
 /* ============================================================
+   Error boundary
+   ============================================================ */
+.errorboundary {
+  max-width: 480px;
+  margin: 80px auto;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 40px 28px;
+}
+.errorboundary__icon {
+  font-size: 44px;
+}
+.errorboundary__title {
+  font-size: 20px;
+  margin: 12px 0 6px;
+}
+.errorboundary__text {
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+.errorboundary__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ============================================================
    Footer
    ============================================================ */
 .footer {
