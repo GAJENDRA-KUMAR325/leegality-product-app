@@ -1,13 +1,13 @@
 # 🛒 ShopKart — Product Listing & Detail App
 
-[![CI](https://github.com/GajendraKumarbypt/leegality-product-app/actions/workflows/ci.yml/badge.svg)](https://github.com/GajendraKumarbypt/leegality-product-app/actions/workflows/ci.yml)
+[![CI](https://github.com/GAJENDRA-KUMAR325/leegality-product-app/actions/workflows/ci.yml/badge.svg)](https://github.com/GAJENDRA-KUMAR325/leegality-product-app/actions/workflows/ci.yml)
 ![React](https://img.shields.io/badge/React-18-149eca)
 ![Vite](https://img.shields.io/badge/Vite-5-646cff)
 ![Tests](https://img.shields.io/badge/tests-18%20passing-3fb950)
 
 > Amazon-style e-commerce catalogue built on the [DummyJSON API](https://dummyjson.com/docs/products) for the **Leegality Frontend Engineer Assessment**.
 >
-> **Repo:** https://github.com/GajendraKumarbypt/leegality-product-app · **Live demo:** _add after deploying_
+> **Repo:** https://github.com/GAJENDRA-KUMAR325/leegality-product-app · **Live demo:** _add after deploying_
 
 A production-minded React app demonstrating API integration, reusable components, state management, combined filtering, routing — and going further with a full **internationalization layer** (language + currency + RTL + machine-translated product content), **URL-synced filters**, **tests**, and **accessibility**.
 
