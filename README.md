@@ -8,7 +8,7 @@
 
 > Amazon-style e-commerce catalogue built on the [DummyJSON API](https://dummyjson.com/docs/products) for the **Leegality Frontend Engineer Assessment**.
 >
-> **Repo:** https://github.com/GAJENDRA-KUMAR325/leegality-product-app · **Live demo:** _add after deploying_
+> **Repo:** https://github.com/GAJENDRA-KUMAR325/leegality-product-app · **Live demo:** https://gajendra-kumar325.github.io/leegality-product-app/
 
 A production-minded React app demonstrating API integration, reusable components, state management, combined filtering, routing — and going further with a full **internationalization layer** (language + currency + RTL + machine-translated product content), **URL-synced filters**, **tests**, and **accessibility**.
 
