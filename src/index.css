@@ -62,6 +62,69 @@ h3 {
 }
 
 /* ============================================================
+   Scrollbars — slim, neutral, hover-reactive (WebKit + Firefox)
+   ============================================================ */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c4cacc transparent;
+}
+
+/* WebKit (Chrome / Safari / Edge) — page-level */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #c4cacc;
+  border-radius: 999px;
+  /* padding around the thumb via a transparent border */
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9aa3a6;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Compact variant for the in-panel scroll areas (filters, locale menu) */
+.filters__options--scroll::-webkit-scrollbar,
+.locale__menu::-webkit-scrollbar {
+  width: 8px;
+}
+.filters__options--scroll::-webkit-scrollbar-thumb,
+.locale__menu::-webkit-scrollbar-thumb {
+  border-width: 2px;
+}
+/* Reveal the thumb on hover/scroll for a cleaner resting state */
+.filters__options--scroll,
+.locale__menu {
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s ease;
+}
+.filters__options--scroll:hover,
+.filters__options--scroll:focus-within,
+.locale__menu:hover {
+  scrollbar-color: #c4cacc transparent;
+}
+.filters__options--scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.filters__options--scroll:hover::-webkit-scrollbar-thumb,
+.filters__options--scroll:focus-within::-webkit-scrollbar-thumb,
+.locale__menu:hover::-webkit-scrollbar-thumb {
+  background-color: #c4cacc;
+}
+
+/* ============================================================
    App shell
    ============================================================ */
 .app {
